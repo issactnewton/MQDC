@@ -18,6 +18,7 @@ from tkinter import filedialog
 from tkinter import messagebox
 import PIL
 import folium
+import sys,os
 
 
 # # FUNCTION
@@ -160,6 +161,13 @@ def fill_input():
 def clear_some_entries(entry):
     entry.delete(0, tk.END)
 
+def resource(relative_path):
+    base_path = getattr(
+        sys,
+        '_MEIPASS',
+        os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
 
 # # GUI
 
@@ -271,6 +279,8 @@ fill_input_button.pack(side=tk.BOTTOM, anchor=tk.S,pady = 50)
 
 
 # Run the main window loop
+logo = resource("mqdc.ico")
+window.iconbitmap(logo)
 window.mainloop()
 
 
