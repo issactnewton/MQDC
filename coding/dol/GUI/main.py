@@ -3,7 +3,7 @@
 
 # # LIBRARY
 
-# In[90]:
+# In[1]:
 
 
 import tkinter as tk
@@ -18,12 +18,12 @@ from tkinter import filedialog
 from tkinter import messagebox
 import PIL
 import folium
-import sys,os
+import sys, os
 
 
 # # FUNCTION
 
-# In[95]:
+# In[77]:
 
 
 def get_input():
@@ -157,6 +157,7 @@ def fill_input():
         entry_minlon.insert(0, "100.5469")
         entry_maxlat.insert(0, "13.8872")
         entry_maxlon.insert(0, "100.5981")
+        parcel_combobox.current(0)
 
 def clear_some_entries(entry):
     entry.delete(0, tk.END)
@@ -168,17 +169,40 @@ def resource(relative_path):
         os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
 
+def on_enter_key(event):
+    get_input()
+    
+def tips():
+    text = """
+    Data you must prepare:\n
+    UTM - First 9 digits of UTM(convert roman number to digit)\n
+    Min/Max Lat/Lon - Type in the input box\n
+    Parcel - Sometimes 47 or 48, just try\n
+    Resolution - Utilization depends on the scale\n
+    (For a large scale suggest above 1920x1080)
+    """
+    messagebox.showinfo("Tips", text)
+
 
 # # GUI
 
-# In[102]:
+# In[78]:
 
 
 # Create the main window
 window = tk.Tk()
-window.title("Boundary line retriever application")
+window.title("Boundary Line Retriever Application 1.0.1")
 window.geometry("500x500")
 window.resizable(False, False)
+
+# Create the menu bar
+menu_bar = tk.Menu(window)
+
+file_menu = tk.Menu(menu_bar, tearoff=0)
+file_menu.add_command(label="Fill Example Data", command=fill_input)
+
+menu_bar.add_cascade(label="Tools", menu = file_menu)
+window.config(menu=menu_bar)
 
 
 # Create a frame to hold the input fields
@@ -259,7 +283,7 @@ resolution_combobox.current(3)  # Set default selection
 resolution_combobox.grid(row=6, column=1)
 
 # Create a button to submit the input
-submit_button = ttk.Button(window, text="Retreive the boundary line", command=get_input)
+submit_button = ttk.Button(window, text="Retrieve the boundary line", command=get_input)
 submit_button.pack()
 
 # Delete all input
@@ -273,9 +297,13 @@ label_loading = ttk.Label(window, text="Loading image...")
 # Create a button to show the image
 show_image_button = ttk.Button(window, text="Show image", command=show_image)
 
+
 # Create a auto complete button
-fill_input_button = ttk.Button(window, text="Auto fill the example data", command=fill_input)
-fill_input_button.pack(side=tk.BOTTOM, anchor=tk.S,pady = 50)
+tips_button = ttk.Button(window, text="How to use ?",command = tips)
+tips_button.pack(side=tk.BOTTOM, anchor=tk.S,pady = (0,50))
+
+# Run retrieve with ENTER button
+window.bind('<Return>', on_enter_key)
 
 
 # Run the main window loop
